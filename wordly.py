@@ -2,7 +2,7 @@ from customtkinter import *
 from customtkinter import CTkLabel
 from CTkMessagebox import CTkMessagebox
 from random import choice
-from dict.py import words
+from dict import words
 
 set_appearance_mode('dark')
 set_default_color_theme('blue')
