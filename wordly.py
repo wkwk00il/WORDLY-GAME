@@ -4,12 +4,23 @@ from CTkMessagebox import CTkMessagebox
 from random import choice
 from dict import words
 
-set_appearance_mode('dark')
+'''
+APPLICATION THEME
+'''
+set_appearance_mode('dark')  # for more details check customtkinter lib
 set_default_color_theme('blue')
+'''
+APPLICATION THEME
+'''
 
+'''
+GLOBALS
+'''
 count_row = 0
 random_word = choice(words).upper()
-
+'''
+GLOBALS
+'''
 
 def compare_words():
     global count_row
@@ -75,12 +86,18 @@ def info():
     CTkMessagebox(title='Правила игры',
                   message='В игре вам нужно отгадать слово.\nУ вас есть 6 попыток. Введите ваше слово в верхнее поле для ввода\nи нажмите кнопку "Сравнить".\nЕсли какая-то буква вашего слова стоит на том же месте, что и буква загаданного слова,\nто она будет выделена зеленым. Если буква стоит не на своем месте, но она присутствует в загаданном слове,\nто она будет выделена желтым.')
 
-
+'''
+INITIALIZING THE APPLICATION WINDOW
+'''
 window = CTk()
 window.title('WORDLY')
-text = StringVar()
-text.trace('w', callback)
+'''
+INITIALIZING THE APPLICATION WINDOW
+'''
 
+'''
+SETTINGS FOR BUTTONS, FIELDS AND WIDGETS
+'''
 frame = CTkFrame(
     window,
     width=600,
@@ -109,6 +126,8 @@ result_window = CTkLabel(
 )
 result_window.grid(row=6, column=3)
 
+text = StringVar()
+text.trace('w', callback)
 word_tf = CTkEntry(
     frame,
     textvariable=text,
@@ -135,6 +154,9 @@ info_button = CTkButton(
     command=info
 )
 info_button.pack(anchor='nw')
+'''
+SETTINGS FOR BUTTONS, FIELDS AND WIDGETS
+'''
 
 window.geometry('600x600')
 window.mainloop()
