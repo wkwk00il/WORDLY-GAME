@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from customtkinter import *
 from customtkinter import CTkLabel
 from CTkMessagebox import CTkMessagebox
@@ -22,45 +23,45 @@ random_word = choice(words).upper()
 GLOBALS
 '''
 
+
 def compare_words():
     global count_row
     count_row += 1
-    word1 = word_tf.get()
-    word_tf.delete(0, END)
+    word1 = word_tf.get().upper()
     global random_word
     word2 = random_word
     if len(word1) != 5:
         CTkMessagebox(title='Ошибка', message='В слове должно быть 5 букв')
         return
-    else:
-        word1 = [i for i in word1]
-        word2 = [i for i in word2]
-        indexes_green = []
-        indexes_yellow = []
-        res = ''
-        for i in range(len(word1)):
-            if word1[i] == word2[i]:
-                indexes_green.append(i)
-            elif word1[i] in word2:
-                indexes_yellow.append(i)
-            res += word1[i]
-        compare_window.configure(state=NORMAL)
-        compare_window.tag_config('center', justify='center')
-        compare_window.insert(END, f'{res}\n')
-        compare_window.tag_add('center', 1.0, END)
-        for i in range(len(indexes_green)):
-            compare_window.tag_add('green', f'{count_row}.{indexes_green[i]}')
-            compare_window.tag_config('green', foreground='green')
-        for i in range(len(indexes_yellow)):
-            compare_window.tag_add('yellow', f'{count_row}.{indexes_yellow[i]}')
-            compare_window.tag_config('yellow', foreground='yellow')
-        compare_window.configure(state=DISABLED)
-        if word1 == word2:
-            result_window.configure(text='Отлично! Вы отгадали слово!')
-            return
-        if count_row == 6:
-            result_window.configure(text=f'Не получилось. Слово: {random_word}')
-            compare_button.configure(state='disabled')
+    word_tf.delete(0, END)
+    word1 = [i for i in word1]
+    word2 = [i for i in word2]
+    indexes_green = []
+    indexes_yellow = []
+    res = ''
+    for i in range(len(word1)):
+        if word1[i] == word2[i]:
+            indexes_green.append(i)
+        elif word1[i] in word2:
+            indexes_yellow.append(i)
+        res += word1[i]
+    compare_window.configure(state=NORMAL)
+    compare_window.tag_config('center', justify='center')
+    compare_window.insert(END, f'{res}\n')
+    compare_window.tag_add('center', 1.0, END)
+    for i in range(len(indexes_green)):
+        compare_window.tag_add('green', f'{count_row}.{indexes_green[i]}')
+        compare_window.tag_config('green', foreground='green')
+    for i in range(len(indexes_yellow)):
+        compare_window.tag_add('yellow', f'{count_row}.{indexes_yellow[i]}')
+        compare_window.tag_config('yellow', foreground='yellow')
+    compare_window.configure(state=DISABLED)
+    if word1 == word2:
+        result_window.configure(text='Отлично! Вы отгадали слово!')
+        return
+    if count_row == 6:
+        result_window.configure(text=f'Не получилось. Слово: {random_word}')
+        compare_button.configure(state='disabled')
 
 
 def try_again():
@@ -76,15 +77,19 @@ def try_again():
 
 
 def callback(*events):
-    if not text.get().isupper() or text.get().isdigit() or text.get().isspace():
+    if text.get().isdigit() or text.get().isspace():
         if text.get().isdigit():
             CTkMessagebox(title='Ошибка', message='Нельзя вводить цифры')
         text.set(text.get()[:-1])
+    if len(text.get()) > 5:
+        word_tf.delete(5, END)
+        CTkMessagebox(title='Ошибка', message='В слове должно быть 5 букв')
 
 
 def info():
     CTkMessagebox(title='Правила игры',
                   message='В игре вам нужно отгадать слово.\nУ вас есть 6 попыток. Введите ваше слово в верхнее поле для ввода\nи нажмите кнопку "Сравнить".\nЕсли какая-то буква вашего слова стоит на том же месте, что и буква загаданного слова,\nто она будет выделена зеленым. Если буква стоит не на своем месте, но она присутствует в загаданном слове,\nто она будет выделена желтым.')
+
 
 '''
 INITIALIZING THE APPLICATION WINDOW
