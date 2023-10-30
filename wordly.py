@@ -3,7 +3,8 @@ from customtkinter import *
 from customtkinter import CTkLabel
 from CTkMessagebox import CTkMessagebox
 from random import choice
-from dict import words
+from dict import words4, words5, words6
+
 
 '''
 APPLICATION THEME
@@ -14,24 +15,35 @@ set_default_color_theme('blue')
 APPLICATION THEME
 '''
 
+
 '''
 GLOBALS
 '''
 count_row = 0
-random_word = choice(words).upper()
+words = {
+    4: words4,
+    5: words5,
+    6: words6
+}
+number_of_letters = 0
+random_word = ''
 '''
 GLOBALS
 '''
 
 
+'''
+FUNCTIONS
+'''
 def compare_words():
     global count_row
     count_row += 1
     word1 = word_tf.get().upper()
     global random_word
     word2 = random_word
-    if len(word1) != 5:
-        CTkMessagebox(title='Ошибка', message='В слове должно быть 5 букв')
+    global number_of_letters
+    if len(word1) != number_of_letters:
+        CTkMessagebox(title='Ошибка', message=f'В слове должно быть {number_of_letters} букв')
         return
     word_tf.delete(0, END)
     word1 = [i for i in word1]
@@ -70,7 +82,7 @@ def try_again():
     compare_window.configure(state=DISABLED)
     result_window.configure(text='')
     global random_word
-    random_word = choice(words).upper()
+    random_word = choice(words[number_of_letters]).upper()
     global count_row
     count_row = 0
     compare_button.configure(state='normal')
@@ -81,14 +93,65 @@ def callback(*events):
         if text.get().isdigit():
             CTkMessagebox(title='Ошибка', message='Нельзя вводить цифры')
         text.set(text.get()[:-1])
-    if len(text.get()) > 5:
-        word_tf.delete(5, END)
-        CTkMessagebox(title='Ошибка', message='В слове должно быть 5 букв')
+    global number_of_letters
+    if len(text.get()) > number_of_letters:
+        word_tf.delete(number_of_letters, END)
+        CTkMessagebox(title='Ошибка', message=f'В слове должно быть {number_of_letters} букв')
 
 
 def info():
     CTkMessagebox(title='Правила игры',
-                  message='В игре вам нужно отгадать слово.\nУ вас есть 6 попыток. Введите ваше слово в верхнее поле для ввода\nи нажмите кнопку "Сравнить".\nЕсли какая-то буква вашего слова стоит на том же месте, что и буква загаданного слова,\nто она будет выделена зеленым. Если буква стоит не на своем месте, но она присутствует в загаданном слове,\nто она будет выделена желтым.')
+                  message='В игре вам нужно отгадать слово.\n(Легко -- 4 буквы; Нормально -- 5 букв; Сложно -- 6 букв)\nУ вас есть 6 попыток. Введите ваше слово в верхнее поле для ввода\nи нажмите кнопку "Сравнить".\nЕсли какая-то буква вашего слова стоит на том же месте, что и буква загаданного слова,\nто она будет выделена зеленым. Если буква стоит не на своем месте, но она присутствует в загаданном слове,\nто она будет выделена желтым.')
+
+
+def set_easy():
+    global number_of_letters
+    number_of_letters = 4
+    start_window.pack_forget()
+    info_button.pack_forget()
+    frame.pack(expand=True)
+    info_button.pack(side=RIGHT)
+    back_button.pack(side=LEFT)
+    global random_word
+    random_word = choice(words4).upper()
+    try_again()
+
+
+def set_normal():
+    global number_of_letters
+    number_of_letters = 5
+    start_window.pack_forget()
+    info_button.pack_forget()
+    frame.pack(expand=True)
+    info_button.pack(side=RIGHT)
+    back_button.pack(side=LEFT)
+    global random_word
+    random_word = choice(words5).upper()
+    try_again()
+
+
+def set_hard():
+    global number_of_letters
+    number_of_letters = 6
+    start_window.pack_forget()
+    info_button.pack_forget()
+    frame.pack(expand=True)
+    info_button.pack(side=RIGHT)
+    back_button.pack(side=LEFT)
+    global random_word
+    random_word = choice(words6).upper()
+    try_again()
+
+
+def back():
+    frame.pack_forget()
+    back_button.pack_forget()
+    info_button.pack_forget()
+    start_window.pack(expand=True)
+    info_button.pack(anchor='se')
+'''
+FUNCTIONS
+'''
 
 
 '''
@@ -103,12 +166,45 @@ INITIALIZING THE APPLICATION WINDOW
 '''
 SETTINGS FOR BUTTONS, FIELDS AND WIDGETS
 '''
+start_window = CTkFrame(
+    window,
+    width=600,
+    height=600
+)
+start_window.pack(expand=True)
+
+difficulty_selection_label = CTkLabel(
+    start_window,
+    text='Выберите сложность',
+)
+difficulty_selection_label.grid(row=1, column=2)
+
+easy_button = CTkButton(
+    start_window,
+    text='Легко',
+    command=set_easy
+)
+easy_button.grid(row=3, column=1)
+
+normal_button = CTkButton(
+    start_window,
+    text='Нормально',
+    command=set_normal
+)
+normal_button.grid(row=3, column=2)
+
+hard_button = CTkButton(
+    start_window,
+    text='Сложно',
+    command=set_hard
+)
+hard_button.grid(row=3, column=3)
+
 frame = CTkFrame(
     window,
     width=600,
     height=600
 )
-frame.pack(expand=True)
 
 word_lb = CTkLabel(
     frame,
@@ -136,6 +232,7 @@ text.trace('w', callback)
 word_tf = CTkEntry(
     frame,
     textvariable=text,
+    border_color='blue'
 )
 word_tf.grid(row=2, column=3)
 
@@ -158,10 +255,17 @@ info_button = CTkButton(
     text='info',
     command=info
 )
-info_button.pack(anchor='nw')
+info_button.pack(anchor='se')
+
+back_button = CTkButton(
+    window,
+    text='Назад',
+    command=back
+)
 '''
 SETTINGS FOR BUTTONS, FIELDS AND WIDGETS
 '''
+
 
 window.geometry('600x600')
 window.mainloop()
