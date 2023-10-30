@@ -112,7 +112,7 @@ frame.pack(expand=True)
 
 word_lb = CTkLabel(
     frame,
-    text='Введите слово (поддерживается только CAPS)',
+    text='Введите слово',
 )
 word_lb.grid(row=1, column=3)
 
